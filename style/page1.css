@@ -1,0 +1,117 @@
+html,
+body {
+  background-image: url('../images/5e8f70a8c023205e4245d983.webp');
+  background-size: cover;
+  background-position: center;
+}
+
+.flying-location,
+.flying-dates,
+.flying-age,
+.class-booking {
+  display: flex;
+}
+.main-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.box { 
+  background-color: rgba(173, 216, 230, 0.8);
+  padding: 5%;
+
+}
+.flying-from,
+.departing,
+.adults,
+.class-booking{
+  padding-right: 100px;
+  display: block;
+  height: 50px;
+  padding-bottom: 30px;
+}
+
+.flights-button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  color: darkblue;
+  background-color: red;
+  font-weight: 600;
+  border: 0px;
+  margin-right: 0px;
+  margin-right: -100px;
+}
+.flights-button:hover {
+  cursor: pointer;
+}
+.flying-class {
+  margin-right: 100px;
+  margin-bottom: 30px;
+}
+.filled-out-none {
+  display: none;
+}
+
+.from-input,
+.to-input {
+  position: relative;
+}
+.dropdown-menu {
+  position: absolute;
+  max-height: 200px;
+  overflow-y: auto;
+  width: 350px;
+  background-color: rgb(255, 255, 255);
+  margin-top: 7px;
+  border-radius: 10px;
+  padding: 8px;
+  display: none;
+  grid-auto-rows: 40px;
+  gap: 10px;
+  z-index: 1;
+}
+.open {
+  display: grid;
+
+}
+.dropdown-menu::-webkit-scrollbar {
+  width: 15px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: #ffffff;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(170, 170, 170);
+}
+.items:hover {
+background-color: rgb(235, 235, 235);
+}
+.items {
+  display: grid;
+  grid-template-rows: 20px 20px;
+}
+.iata-and-name,
+.location {
+  white-space: nowrap;
+}
+
+.iata {
+  font-size: 20px;
+  font-weight: 600;
+}
+.name {
+  font-size: 17px;
+}
+.location {
+  font-size: 17px;
+  color: rgb(85, 85, 85);
+}

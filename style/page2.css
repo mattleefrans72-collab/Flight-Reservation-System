@@ -1,0 +1,155 @@
+.main-section {
+  display: flex;
+  padding-top: 60px;
+}
+.flight-rows {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+
+}
+
+.side-bar {
+  background-color: lightblue;
+  display: grid;
+  grid-template-rows: 80px 1fr;
+
+  width: 250px;
+  height: 300px;
+  border-radius: 20px;
+  margin-top: 10px;
+  margin-left: 5px;
+  padding: 1px;
+}
+.side-bar-info {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-auto-rows: 80px;
+}
+.side-bar-text {
+  display: block;
+}
+.side-bar-search {
+  grid-area: 3 / 2;  
+}
+.search-button {
+  padding: 10px 20px;
+  border-radius: 20px;
+  background-color: rgb(0, 179, 255);
+  font-weight: 600;
+  border: 0px;
+  margin-right: 0px;
+}
+
+.filter-input {
+  width: 80%;
+}
+
+
+
+
+.flights {
+  background-color: rgb(247, 247, 247);
+  display: grid;
+  grid-template-columns: 1fr;
+  grid-auto-rows: 150px;
+  margin-top: 10px;
+  margin-left: 30px;
+  margin-right: 10%;
+  border-radius: 10px;
+  padding: 10px;
+}
+.flight {
+margin-bottom: 20px;
+}
+.outer-layout {
+  background-color: rgb(206, 206, 206);
+  border: 1px solid rgb(206, 206, 206);
+  border-radius: 20px;
+  gap: 1px;
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  height: 100%;
+  width: 100%;
+}
+.inner-layout-1 {
+  background-color: rgb(255, 255, 255);
+  border-top-left-radius: 20px;
+  border-bottom-left-radius: 20px;
+  height: 100%;
+  width: 100%;
+  display: grid;
+  grid-template-columns: 70px 120px 250px 120px;
+  grid-template-rows: 50px 50px;
+  justify-content: center;
+  align-content: center;
+  justify-items: center;
+  align-items: center;
+}
+.inner-layout-2 {
+  background-color: rgb(255, 255, 255);
+  border-top-right-radius: 20px;
+  border-bottom-right-radius: 20px;
+
+  display: grid;
+  grid-template-rows: 35px 35px 35px;
+  padding: 10px;
+}
+.logo,
+.flight-length {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.logo img,
+.flight-length img {
+  height: 100%;
+  object-fit: contain;
+}
+.depart-time,
+.arrive-time {
+  display: flex;
+  flex-direction: column;
+  justify-self: start;
+  font-weight: 600;
+  font-size: 20px;
+}
+.depart-info,
+.arrive-info {
+  font-size: 9px;
+  font-weight: 300;
+  color: grey;
+}
+.inner-layout-2 div {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+  width: 100%;
+}
+
+.travel-class {
+  align-self: end;
+  color: grey;
+  font-size: 12px;
+}
+.price {
+  font-weight: 800;
+  font-size: 25px;
+}
+.view-button {
+  height: 100%;
+  width: 100%;
+
+  border: 1px solid rgb(0, 0, 215);
+  border-radius: 5px;
+  background-color: white;
+  color: rgb(0, 0, 215);
+
+  transition: 0.2s;
+}
+.view-button:hover {
+  background-color: rgba(0, 0, 255, 0.147);
+}
+
