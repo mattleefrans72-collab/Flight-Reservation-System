@@ -5,13 +5,11 @@ const fromInput = document.querySelector('.js-from-input');
 const toInput = document.querySelector('.js-to-input');
 
 fromInput.addEventListener('input', debounce(async() => {
-  console.log('funtion running');
   await renderDropdown(fromInput.value);
   fromdropdown('flying-from');
 }, 700))
 
 toInput.addEventListener('input', debounce(async() => {
-  console.log('funtion running');
   await renderDropdown(toInput.value);
   fromdropdown('flying-to');
 }, 700))
@@ -27,10 +25,10 @@ flightsButton.addEventListener('click', () => {
     const returning = document.querySelector('.js-returning-input').value;
     const from = document.querySelector('.js-from-input').value;
     const to = document.querySelector('.js-to-input').value;
-    const adult = document.querySelector('.js-adults-input').value;
+    const adult = document.querySelector('.js-adult-input').value;
     const children = document.querySelector('.js-children-input').value;
     const travelClass = document.querySelector('.js-class-input').value;
-    window.location.href = `page2?from=${from}to=${to}departing=${departing}returning=${returning}adult=${adult}children=${children}travelClass=${travelClass}.html`
+    window.location.href = `page2?from=${from}to=${to}departing=${departing}returning=${returning}adult=${adult}children=${children}travelClass=${travelClass}.php`
   }
 })
 
