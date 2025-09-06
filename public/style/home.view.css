@@ -20,16 +20,18 @@ body {
 .box { 
   background-color: rgba(173, 216, 230, 0.8);
   padding: 5%;
-
 }
 .flying-from,
 .departing,
 .adults,
-.class-booking{
+.class-booking {
   padding-right: 100px;
   display: block;
   height: 50px;
   padding-bottom: 30px;
+}
+.departing {
+  padding-right: 155px;
 }
 
 .flights-button {
@@ -41,6 +43,7 @@ body {
   border: 0px;
   margin-right: 0px;
   margin-right: -100px;
+  margin-left: 80px;
 }
 .flights-button:hover {
   cursor: pointer;

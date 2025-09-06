@@ -5,8 +5,6 @@
 .flight-rows {
   display: flex;
   flex-direction: column;
-  flex: 1;
-
 }
 
 .side-bar {
@@ -14,17 +12,18 @@
   display: grid;
   grid-template-rows: 80px 1fr;
 
-  width: 250px;
-  height: 300px;
+  width: 300px;
+  height: 350px;
   border-radius: 20px;
   margin-top: 10px;
-  margin-left: 5px;
+  margin-left: 20px;
   padding: 1px;
 }
 .side-bar-info {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-auto-rows: 80px;
+  padding: 10px;
 }
 .side-bar-text {
   display: block;
@@ -45,22 +44,18 @@
   width: 80%;
 }
 
-
-
-
 .flights {
   background-color: rgb(247, 247, 247);
   display: grid;
-  grid-template-columns: 1fr;
+
   grid-auto-rows: 150px;
   margin-top: 10px;
-  margin-left: 30px;
-  margin-right: 10%;
+  margin-left: 40px;
   border-radius: 10px;
-  padding: 10px;
+  padding: 10px 20px;
 }
 .flight {
-margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 .outer-layout {
   background-color: rgb(206, 206, 206);
@@ -79,7 +74,7 @@ margin-bottom: 20px;
   height: 100%;
   width: 100%;
   display: grid;
-  grid-template-columns: 70px 120px 250px 120px;
+  grid-template-columns: 100px 135px 290px 135px;
   grid-template-rows: 50px 50px;
   justify-content: center;
   align-content: center;
@@ -104,9 +99,13 @@ margin-bottom: 20px;
   justify-content: center;
 }
 .logo img,
+.travel-class img,
 .flight-length img {
   height: 100%;
   object-fit: contain;
+}
+.personalBag-img {
+  height: 70%;
 }
 .depart-time,
 .arrive-time {
@@ -115,6 +114,9 @@ margin-bottom: 20px;
   justify-self: start;
   font-weight: 600;
   font-size: 20px;
+}
+.arrive-time {
+  justify-self: center;
 }
 .depart-info,
 .arrive-info {
@@ -133,6 +135,7 @@ margin-bottom: 20px;
   align-self: end;
   color: grey;
   font-size: 12px;
+  height: 25px;
 }
 .price {
   font-weight: 800;
@@ -152,4 +155,20 @@ margin-bottom: 20px;
 .view-button:hover {
   background-color: rgba(0, 0, 255, 0.147);
 }
-
+.flight-pages {
+  margin: 10px 0px 60px 30px;
+  border: 1px solid rgb(195, 195, 195);
+  border-radius: 4px;
+  padding: 5px;
+  display: flex;
+  justify-content: center;
+}
+.flight-pages button {
+  background-color: white;
+  border: none;
+  color: rgb(0, 0, 161);
+}
+.flight-pages button:hover {
+  cursor: pointer;
+  text-decoration-line: underline;
+}
