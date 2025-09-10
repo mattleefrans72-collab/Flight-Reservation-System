@@ -6,28 +6,34 @@
     <div class="main-section">
       <div class="side-bar">
         <div>Flight filter</div>
-        <div class="side-bar-info">
+        
+        <form action="/flight" method="get">
+          <input type="hidden" name="adults" value="<?= $_GET["adults"] ?>">
+          <input type="hidden" name="childrens" value="<?= $_GET["childrens"] ?>">
 
-          <div class="side-bar-text">FROM:
-            <input class="filter-input from-input" type="text" value="<?= $_GET["from"] ?>">
-          </div>
+          <div class="side-bar-info">
+            <div class="side-bar-text">FROM:
+              <input name="from" class="filter-input from-input" type="text" value="<?= $_GET["from"] ?>">
+            </div>
 
-          <div class="side-bar-text">TO:
-            <input class="filter-input to-input" type="text" value="<?= $_GET["to"] ?>">
-          </div>
+            <div class="side-bar-text">TO:
+              <input name="to" class="filter-input to-input" type="text" value="<?= $_GET["to"] ?>">
+            </div>
 
-          <div class="side-bar-text">DEPARTING:
-            <input class="filter-input departing-input" type="date" value="<?= $_GET["departure"] ?>">
-          </div>
+            <div class="side-bar-text">DEPARTING:
+              <input name="departure" class="filter-input departing-input" type="date" value="<?= $_GET["departure"] ?>">
+            </div>
 
-          <div class="side-bar-text">RETURNING:
-            <input class="filter-input departing-input" type="date" value="<?= $_GET["return"] ?>">
-          </div>
+            <div class="side-bar-text">RETURNING:
+              <input name="return" class="filter-input departing-input" type="date" value="<?= $_GET["return"] ?>">
+            </div>
 
-          <div class="side-bar-search">
-            <button class="search-button">Search</button>
-          </div>
-        </div>
+            <div class="side-bar-search">
+              <button class="search-button" type="submit">Search</button>
+            </div>
+          </div>  
+        </form>
+
       </div>
 
       <div class="flight-rows">
@@ -40,8 +46,16 @@
 
               $price = $flight['price']['total'];
               $currency = $flight['price']['currency'];
-              $airline = $flight['validatingAirlineCodes'][0];
-          
+              $outboundAirlines = map_array($outbound, 'carrierCode');
+              $inboundAirlines = map_array($inbound, 'carrierCode');
+
+              $outboundSegmentIds = array_column($outbound, 'id');
+              $inboundSegmentIds = array_column($inbound, 'id');
+              $fareDetails = $flight['travelerPricings'][0]['fareDetailsBySegment'];
+              $dictionaries = $response['dictionaries']; 
+
+              $outboundBags = getBagCountBySegments($fareDetails, $outboundSegmentIds);
+              $inboundBags = getBagCountBySegments($fareDetails, $inboundSegmentIds);
             ?>
 
           <div class="flight">
@@ -54,7 +68,20 @@
                     $first = $outbound[0];
                     $last = end($outbound);
                   ?>
-                  <div class="logo"><?= $airline ?></div>
+
+                  <?php
+                    $logoSize = count($outboundAirlines) == 1 ? 'large-logo' : 'small-logo';
+                  ?>
+                  <div class="logo ">
+                    <div class="<?=$logoSize?>">
+                    <?php foreach ($outboundAirlines as $index => $airline): ?>
+                      <div class="image logo-<?=$index?>">
+                        <img src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
+
+                      </div>
+                    <?php endforeach; ?>
+                    </div>
+                  </div>
 
                   <div class="depart-time">
                     <?= formatTime($first['departure']['at']) ?>
@@ -78,7 +105,18 @@
                       $firstReturn = $inbound[0];
                       $lastReturn = end($inbound);
                     ?>
-                    <div class="logo"><?= $airline ?></div>
+                    <?php
+                      $logoSize = count($inboundAirlines) == 1 ? 'large-logo' : 'small-logo';
+                    ?>
+                    <div class="logo ">
+                      <div class="<?=$logoSize?>">
+                      <?php foreach ($inboundAirlines as $index => $airline): ?>
+                        <div class="image logo-<?=$index?>">
+                          <img src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
+                        </div>
+                      <?php endforeach; ?>
+                      </div>
+                    </div>
 
                     <div class="depart-time">
                       <?= formatTime($firstReturn['departure']['at']) ?>
@@ -100,19 +138,42 @@
 
                 <!-- Price and Button -->
                 <div class="inner-layout-2">
+                  <!-- Outbound Bags -->
                   <div class="travel-class">
-                    <div class="personalBag-img" >
-                      <img src="images/personalBag.png" alt="">
-                    </div>
-                    <img src="images/CarryonBag.png" alt="">
-                    <img src="images/checkedBag.png">
+                      <?php if ($outboundBags['cabin'] == $inboundBags['cabin']): ?>
+                      <img src="images/CarryonBag.png" alt="" style="position: relative; top: 3px; z-index: 1;"> 
+                      <?php endif; ?>
+                      <?php if ($outboundBags['checked'] == $inboundBags['checked']): ?>
+                        <img src="images/checkedBag.png" alt="">
+                      <?php endif; ?>
                   </div>
+
+                  
                   <div class="price">£<?= number_format($price, 2) ?></div>
                   <div>
-                    <button class="view-button">View Seats</button>
+                    <button class="view-button open-details-js" data-modal="<?=$flight['id']?>">More Info</button>
                   </div>
                 </div>
 
+              </div>
+            </div>
+
+            <!-- Overlay -->
+            <div class="overlay hidden overlay-js" data-modal="<?=$flight['id']?>"></div>
+
+            <!-- Side Modal -->
+            <div class="side-modal hidden side-modal-js" data-modal="<?=$flight['id']?>">
+              <div class="modal-header">
+                <h2>Your flight to Bangkok</h2>
+                <button class="close-details close-details-js" data-modal="<?=$flight['id']?>">✖</button>
+              </div>
+
+              <div class="modal-content">
+                <?php displayFlightSegmentDetails($outbound, $fareDetails, $dictionaries, 'Outbound Flight'); ?>
+
+                <?php if (!empty($inbound)): ?>
+                  <?php displayFlightSegmentDetails($inbound, $fareDetails, $dictionaries, 'Inbound Flight'); ?>
+                <?php endif; ?>
               </div>
             </div>
 
@@ -178,6 +239,6 @@
 
       </div> 
     </div>
-   
+   <?php requireModule(["utils/heading", "flight"]) ?>
   </body>
 </html>

@@ -39,11 +39,11 @@ class FlightController {
             'departureDate' => $_GET["departure"],
             'returnDate' => $_GET["return"],
             'adults' => $_GET["adults"],
-            'max' => 30
+            'max' => 100
         ]);
 
           // 5. Decode the JSON response
-        $allFlights = json_decode($flightOffers[0]->getResponse()->getBody(), true)['data'] ?? [];
+        $allFlights = json_decode($flightOffers[0]->getResponse()->getBody(), true) ?? [];
 
         Storage::storeWithExpiry("flights", $allFlights, 3600);
 
@@ -53,11 +53,12 @@ class FlightController {
     }
 
     $allFlights = Storage::getWithExpiry("flights");
-    $data = $this->paginate($allFlights);
+    $response = $this->paginate($allFlights);
     // 6. Load view with data
-    view('flight.view.php', $data);
+    view('flight.view.php', $response);
   }
-  protected function paginate($data, $perPage = 15) {
+  protected function paginate($response, $perPage = 15) {
+    $data = $response['data'];
     $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
     $total = count($data);
     $totalPages = ceil($total / $perPage);
@@ -68,7 +69,8 @@ class FlightController {
         'flights' => $pagedFlights,
         'totalPages' => $totalPages,
         'currentPage' => $page,
-        'allFlights' => $data
+        'allFlights' => $data,
+        'response' => $response
     ];
   }
 }

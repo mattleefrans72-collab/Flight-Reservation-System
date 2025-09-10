@@ -59,17 +59,72 @@ function duration($durationStr) {
 function stopLabel($segments) {
     return count($segments) - 1;
 }
-function getBagCountBySegments(array $fareDetails, array $segmentIds): array {
-    $cabin = 0;
-    $checked = 0;
+function getBagCountBySegments($fareDetails, $segmentIds) {
+  $cabin = 0;
+  $checked = 0;
 
+  foreach ($fareDetails as $detail) {
+      if (in_array($detail['segmentId'], $segmentIds)) {
+          $cabin += $detail['includedCabinBags']['quantity'] ?? 0;
+          $checked += $detail['includedCheckedBags']['quantity'] ?? 0;
+      }
+  }
+
+  return ['cabin' => $cabin, 'checked' => $checked];
+}
+function displayFlightSegmentDetails($segments, $fareDetails, $dictionaries, $title = 'Flight Segment') {
+    echo "<h3>{$title}</h3>";
+
+    foreach ($segments as $segment) {
+        $segmentId = $segment['id'];
+        $fare = getFareBySegmentId($fareDetails, $segmentId);
+
+        $departure = $segment['departure'];
+        $arrival = $segment['arrival'];
+        $airline = $dictionaries['carriers'][$segment['carrierCode']] ?? $segment['carrierCode'];
+        $aircraftCode = $segment['aircraft']['code'];
+        $aircraft = $dictionaries['aircraft'][$aircraftCode] ?? $aircraftCode;
+
+        $cabin = $fare['cabin'] ?? 'N/A';
+        $checkedBag = $fare['includedCheckedBags']['quantity'] ?? ($fare['includedCheckedBags']['weight'] ?? '0');
+        $cabinBag = $fare['includedCabinBags']['quantity'] ?? '0';
+
+        echo "<div class='segment'>";
+        echo "<p><strong>{$departure['iataCode']}</strong> → <strong>{$arrival['iataCode']}</strong></p>";
+        echo "<p>".date('D, M j Y, H:i', strtotime($departure['at'])) ." → " . date('H:i', strtotime($arrival['at'])) . "</p>";
+        echo "<p>Airline: {$airline} ({$segment['carrierCode']}{$segment['number']})</p>";
+        echo "<p>Aircraft: {$aircraft}</p>";
+        echo "<p>Cabin: {$cabin}</p>";
+        echo "<p>Checked Bag: {$checkedBag}</p>";
+        echo "<p>Cabin Bag: {$cabinBag}</p>";
+        echo "</div><hr>";
+    }
+}
+
+// Helper to find fare by segment ID
+function getFareBySegmentId($fareDetails, $segmentId) {
     foreach ($fareDetails as $detail) {
-        if (in_array($detail['segmentId'], $segmentIds)) {
-            $cabin += $detail['includedCabinBags']['quantity'] ?? 0;
-            $checked += $detail['includedCheckedBags']['quantity'] ?? 0;
+        if ($detail['segmentId'] == $segmentId) {
+            return $detail;
         }
     }
+    return [];
+}
 
-    return ['cabin' => $cabin, 'checked' => $checked];
+
+function map_array(array $array, string $targetKey) {
+  $result = [];
+
+  foreach ($array as $item) {
+    if (!isset($item[$targetKey])) continue;
+
+    $value = $item[$targetKey];
+
+    if (!in_array($value, $result)) {
+        $result[] = $value;
+    }
+  }
+
+  return $result;
 }
 ?>

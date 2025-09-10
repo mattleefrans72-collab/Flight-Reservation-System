@@ -90,7 +90,11 @@
   grid-template-rows: 35px 35px 35px;
   padding: 10px;
 }
-.logo,
+.logo {
+  height: 100%;
+  width: 50px;
+  padding: 0px 25px;
+}
 .flight-length {
   width: 100%;
   height: 100%;
@@ -98,6 +102,7 @@
   align-items: center;
   justify-content: center;
 }
+.small-logo img,
 .logo img,
 .travel-class img,
 .flight-length img {
@@ -106,6 +111,9 @@
 }
 .personalBag-img {
   height: 70%;
+}
+.bag {
+  margin-bottom: -10px;
 }
 .depart-time,
 .arrive-time {
@@ -171,4 +179,78 @@
 .flight-pages button:hover {
   cursor: pointer;
   text-decoration-line: underline;
+}
+.small-logo,
+.large-logo {
+  height: inherit;
+}
+.small-logo {
+  display: grid;
+  grid-template-columns: 25px 25px;
+  grid-template-rows: 25px 25px;
+}
+.image {
+  height: 100%;
+}
+.logo-0 {
+  position: relative;
+  top: 5px;
+}
+.logo-1 {
+  grid-column: 2;
+  grid-row: 2;
+  position: relative;
+  bottom: 5px;
+}
+
+
+
+
+/* Overlay background */
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 999;
+}
+
+/* Slide-in modal from the right */
+.side-modal {
+  position: fixed;
+  top: 0;
+  right: 0;
+  height: 100vh;
+  width: 500px;
+  background: #fff;
+  box-shadow: -4px 0 12px rgba(0, 0, 0, 0.3);
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  border-top-left-radius: 15px;
+  border-bottom-left-radius: 15px;
+}
+.side-modal.active {
+  transform: translateX(0);
+}
+
+
+.hidden {
+  display: none;
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  padding: 20px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  border-bottom: 1px solid #eee;
+}
+
+.modal-content {
+  padding: 20px;
+  overflow-y: auto;
+  flex: 1;
 }
