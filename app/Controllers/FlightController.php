@@ -2,64 +2,48 @@
 namespace App\Controllers;
 
 use App\Http\Forms\FlightForm;
-use Amadeus\Amadeus;
-use Amadeus\Exceptions\ResponseException;
-use App\Core\Storage;
-use App\Http\Session\Flight;
-use App\Core\Config;
+use App\Core\Cache;
+use App\Http\Api\FlightAPI;
 
 class FlightController {
+  protected $resetPageNum = false;
   public function index() {
     $params = [
-      "from" => $_GET["from"],
-      "to" => $_GET["to"],
-      "departure" => $_GET["departure"],
-      "return" => $_GET["return"],
-      "adults" => $_GET["adults"],
-      "childrens" => $_GET["childrens"]
+      'originLocationCode' => $_GET["from"],
+      'destinationLocationCode' => $_GET["to"],
+      'departureDate' => $_GET["departure"],
+      'returnDate' => $_GET["return"],
+      'adults' => $_GET["adults"],
+      'children' => is_numeric($_GET["children"]) ? (int)$_GET["children"] : 0,
+      'max' => 100
     ];
-    FlightForm::validate($params); 
-
-    if (!(Flight::getInfo() == $params) || !Storage::getWithExpiry("flights")) {
-
-      Flight::storeInfo($params);
-
-      // 2. Set API credentials
-      $apiKey = Config::get('amadeus.api_key');
-      $privateKey = Config::get('amadeus.api_secret');
-
-      try {
-        // 3. Build Amadeus client
-        $amadeus = Amadeus::builder($apiKey, $privateKey)->build();
-
-        // 4. Make API call
-        $flightOffers = $amadeus->getShopping()->getFlightOffers()->get([
-            'originLocationCode' => $_GET["from"],
-            'destinationLocationCode' => $_GET["to"],
-            'departureDate' => $_GET["departure"],
-            'returnDate' => $_GET["return"],
-            'adults' => $_GET["adults"],
-            'max' => 100
-        ]);
-
-          // 5. Decode the JSON response
-        $allFlights = json_decode($flightOffers[0]->getResponse()->getBody(), true) ?? [];
-
-        Storage::storeWithExpiry("flights", $allFlights, 3600);
-
-      } catch (ResponseException $e) {
-          throw new \Exception('API error: ' . $e->getMessage());
-      }
+    if (isset($_GET['class']) && $_GET['class'] !== 'ANY') {
+      $params['travelClass'] = $_GET['class'];
     }
 
-    $allFlights = Storage::getWithExpiry("flights");
-    $response = $this->paginate($allFlights);
+    FlightForm::validate($params); 
+
+    $cache = new Cache();
+    $key = 'flights_' . md5(json_encode($params));
+
+    $flights = $cache->get($key);
+
+    if (!$flights) {
+
+      $this->resetPageNum = true;
+
+      $flights = FlightAPI::call($params);
+
+      $cache->set($key, $flights);
+    }
+
+    $response = $this->paginate($flights, $this->resetPageNum);
     // 6. Load view with data
     view('flight.view.php', $response);
   }
-  protected function paginate($response, $perPage = 15) {
+  protected function paginate($response, $reset = false, $perPage = 15) {
     $data = $response['data'];
-    $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+    $page = $reset ? 1 : (int)$_GET['page'];
     $total = count($data);
     $totalPages = ceil($total / $perPage);
     $offset = ($page - 1) * $perPage;

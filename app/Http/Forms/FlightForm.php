@@ -9,16 +9,16 @@ class FlightForm {
   public function __construct(array $attribute) {
     $this->attribute = $attribute;
 
-    if(!Validator::airport($attribute["from"])) {
+    if(!Validator::airport($attribute["originLocationCode"])) {
       $this->errors["from"] = "Please input a valid airport code";
     }
-    if(!Validator::airport($attribute["to"])) {
+    if(!Validator::airport($attribute["destinationLocationCode"])) {
       $this->errors["to"] = "Please input a valid airport code";
     }
-    if(($attribute["departure"]) >= ($attribute["return"])) {
+    if(($attribute["departureDate"]) >= ($attribute["returnDate"])) {
       $this->errors["dates"] = "Please input valid dates";
     }
-    if(!(Validator::positive($attribute["adults"]) && !Validator::positive($attribute["childrens"]))) {
+    if(!(Validator::positive($attribute["adults"]) && !Validator::positive($attribute["children"]))) {
       $this->errors["passenger"] = "Please input a valid number of passenger";
     }
   }

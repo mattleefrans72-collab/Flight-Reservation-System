@@ -86,7 +86,7 @@ function displayFlightSegmentDetails($segments, $fareDetails, $dictionaries, $ti
         $aircraft = $dictionaries['aircraft'][$aircraftCode] ?? $aircraftCode;
 
         $cabin = $fare['cabin'] ?? 'N/A';
-        $checkedBag = $fare['includedCheckedBags']['quantity'] ?? ($fare['includedCheckedBags']['weight'] ?? '0');
+        $checkedBag = $fare['includedCheckedBags']['quantity'] ?? '0';
         $cabinBag = $fare['includedCabinBags']['quantity'] ?? '0';
 
         echo "<div class='segment'>";

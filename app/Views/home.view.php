@@ -42,8 +42,8 @@
           </div>
           
           <div class="childrens">
-            <div>CHILDRENS</div>
-            <input name="childrens" class="childrens-input js-children-input" type="number" value="<?= old("childrens") ?>">
+            <div>CHILDREN</div>
+            <input name="children" class="childrens-input js-children-input" type="number" value="<?= old("children") ?>">
             <div class="error"><?= errors("passenger") ?></div>
           </div>
         </div>
@@ -51,9 +51,11 @@
         <div class="class-booking">
           <div>TRAVEL CLASS</div>
           <select name="class" class="flying-class js-class-input">
-            <option value="Economy">Economy</option>
-            <option value="Business">Business</option>
-            <option value="First">First Class</option>
+            <option value="ANY">Any</option>
+            <option value="ECONOMY">Economy</option>
+            <option value="PRIMIUM ECONOMY">Premium Economy</option>
+            <option value="BUSINESS">Business</option>
+            <option value="FIRST">First Class</option>
           </select>
           <button class="flights-button js-flights-button">SHOWS FLIGHTS</button>
           <div class="filled-out filled-out-none">All field must be filled out</div>

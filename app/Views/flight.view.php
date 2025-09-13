@@ -4,37 +4,110 @@
   <?php require "partials/nav.php" ?>
 
     <div class="main-section">
-      <div class="side-bar">
-        <div>Flight filter</div>
-        
-        <form action="/flight" method="get">
-          <input type="hidden" name="adults" value="<?= $_GET["adults"] ?>">
-          <input type="hidden" name="childrens" value="<?= $_GET["childrens"] ?>">
+      <div class="side">
+        <div class="side-bar">
+          <div>Flight filter</div>
+          
+          <form action="/flight" method="get">
+            <input type="hidden" name="adults" value="<?= $_GET["adults"] ?>">
+            <input type="hidden" name="children" value="<?= $_GET["children"] ?? 0?>">
+            <input type="hidden" name="class" value="<?= $_GET["class"] ?>">
 
-          <div class="side-bar-info">
-            <div class="side-bar-text">FROM:
-              <input name="from" class="filter-input from-input" type="text" value="<?= $_GET["from"] ?>">
+            <div class="side-bar-info">
+              <div class="side-bar-text">FROM:
+                <input name="from" class="filter-input from-input" type="text" value="<?= $_GET["from"] ?>">
+              </div>
+
+              <div class="side-bar-text">TO:
+                <input name="to" class="filter-input to-input" type="text" value="<?= $_GET["to"] ?>">
+              </div>
+
+              <div class="side-bar-text">DEPARTING:
+                <input name="departure" class="filter-input departing-input" type="date" value="<?= $_GET["departure"] ?>">
+              </div>
+
+              <div class="side-bar-text">RETURNING:
+                <input name="return" class="filter-input departing-input" type="date" value="<?= $_GET["return"] ?>">
+              </div>
+
+              <div class="side-bar-search">
+                <button class="search-button" type="submit">Search</button>
+              </div>
+            </div>  
+          </form>
+        </div>
+
+        <form class="filters" action="/flight" method="GET">
+          <div class="filters-header">
+            <div>Filters</div>
+            <button type="reset" class="reset-btn">Reset</button>
+          </div>
+          <div class="result-count">Showing 14 results</div>
+
+          <!-- Stops -->
+          <div class="filter-section">
+            <div class="section-title">
+              <span>Stops</span>
+              
             </div>
 
-            <div class="side-bar-text">TO:
-              <input name="to" class="filter-input to-input" type="text" value="<?= $_GET["to"] ?>">
+            <div class="filter-option">
+              <label>
+                <input type="radio" name="stops" value="any">
+                Any
+              </label>
+              <div class="count">2594<br><span class="from-price">From £493.46</span></div>
             </div>
 
-            <div class="side-bar-text">DEPARTING:
-              <input name="departure" class="filter-input departing-input" type="date" value="<?= $_GET["departure"] ?>">
+            <div class="filter-option">
+              <label>
+                <input type="radio" name="direct" value="direct" checked>
+                Direct only
+              </label>
+              <div class="count">14<br><span class="from-price">From £727.51</span></div>
             </div>
 
-            <div class="side-bar-text">RETURNING:
-              <input name="return" class="filter-input departing-input" type="date" value="<?= $_GET["return"] ?>">
+            <div class="filter-option">
+              <label>
+                <input type="radio" name="1-stops" value="1stop">
+                1 stop max
+              </label>
+              <div class="count">2072<br><span class="from-price">From £493.46</span></div>
+            </div>
+          </div>
+
+          <div class="divider"></div>
+
+          <!-- Airlines -->
+          <div class="filter-section">
+            <div class="section-title">Airlines</div>
+
+            <div class="filter-option">
+              <label>
+                <input type="checkbox" name="airlines" value="thai-airways" checked>
+                Thai Airways
+              </label>
+              <div class="count">10</div>
             </div>
 
-            <div class="side-bar-search">
-              <button class="search-button" type="submit">Search</button>
+            <div class="filter-option">
+              <label>
+                <input type="checkbox" name="airlines" value="eva-airways" checked>
+                Eva Airways
+              </label>
+              <div class="count">10</div>
             </div>
-          </div>  
+          </div>
+
+          <!-- Submit/Reset Buttons -->
+          
+            
+            <button type="submit">Apply Filters</button>
+
         </form>
-
       </div>
+
+      
 
       <div class="flight-rows">
         <div class="flights">
@@ -140,10 +213,10 @@
                 <div class="inner-layout-2">
                   <!-- Outbound Bags -->
                   <div class="travel-class">
-                      <?php if ($outboundBags['cabin'] == $inboundBags['cabin']): ?>
+                      <?php if (($outboundBags['cabin'] >= $inboundBags['cabin']) && ($outboundBags['cabin'] >= 1 && $inboundBags['cabin'] >= 1)): ?>
                       <img src="images/CarryonBag.png" alt="" style="position: relative; top: 3px; z-index: 1;"> 
                       <?php endif; ?>
-                      <?php if ($outboundBags['checked'] == $inboundBags['checked']): ?>
+                      <?php if (($outboundBags['checked'] >= $inboundBags['checked']) && ($outboundBags['checked'] >= 1 && $inboundBags['checked'] >= 1)): ?>
                         <img src="images/checkedBag.png" alt="">
                       <?php endif; ?>
                   </div>
