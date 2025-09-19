@@ -20,30 +20,53 @@ class FlightController {
     if (isset($_GET['class']) && $_GET['class'] !== 'ANY') {
       $params['travelClass'] = $_GET['class'];
     }
+    $stops = $_GET['stops'] ?? '';
+    $airlines1 = $_GET['airlines_show'] ?? [];
+    $airlines2 = $_GET['airlines_hide'] ?? [];
+    $airlines = array_unique(array_merge($airlines1, $airlines2));
 
     FlightForm::validate($params); 
 
     $cache = new Cache();
-    $key = 'flights_' . md5(json_encode($params));
+    $filter = [];
+    $encode = $params;
+    $encode['stops'] = $stops;
+    $filter['stops'] = $stops;
+    $encode['airlines'] = $airlines;
+    $filter['airlines'] = $airlines;
 
-    $flights = $cache->get($key);
+    $key = $cache->encode($encode);
+    // $key = 'flights_' . md5(json_encode($encode));
+    
+    $cached = $cache->get($key);
+    $response = $cached['response'] ?? [];
+    $meta = $cached['extraMeta'] ?? [];
 
-    if (!$flights) {
+    if (!$cached) {
 
       $this->resetPageNum = true;
 
-      $flights = FlightAPI::call($params);
+      $flights_db = new FlightAPI($params);
 
-      $cache->set($key, $flights);
+      $flights_db->filter($filter);
+
+      $response = $flights_db->response;
+
+      $meta = $flights_db->meta;
+
+      $cache->set($key, ['response' => $response, 'extraMeta' => $meta]);
     }
 
-    $response = $this->paginate($flights, $this->resetPageNum);
+
+
+    $response = $this->paginate($response, $this->resetPageNum);
+
     // 6. Load view with data
-    view('flight.view.php', $response);
+    view('flight.view.php',  ['response' => $response, 'extraMeta' => $meta]);
   }
   protected function paginate($response, $reset = false, $perPage = 15) {
     $data = $response['data'];
-    $page = $reset ? 1 : (int)$_GET['page'];
+    $page = !$reset ? (int)($_GET['page'] ?? 1) : 1;
     $total = count($data);
     $totalPages = ceil($total / $perPage);
     $offset = ($page - 1) * $perPage;

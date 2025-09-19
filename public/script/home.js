@@ -50,7 +50,7 @@ async function renderDropdown(query) {
 
   let airportsHTML = '';
 
-  const res = await fetch('/search?search=' + encodeURIComponent(query))
+  const res = await fetch('/search?search=' + encodeURIComponent(query));
   const data = await res.json();
 
   data.forEach((airport) => {

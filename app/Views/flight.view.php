@@ -38,11 +38,12 @@
         </div>
 
         <form class="filters" action="/flight" method="GET">
+          <?php preserve_query_params(['stops', 'airlines_show', 'airlines_hide']) ?>
           <div class="filters-header">
             <div>Filters</div>
             <button type="reset" class="reset-btn">Reset</button>
           </div>
-          <div class="result-count">Showing 14 results</div>
+          <div class="result-count">Showing <?=count($response['allFlights'])?> results</div>
 
           <!-- Stops -->
           <div class="filter-section">
@@ -53,27 +54,20 @@
 
             <div class="filter-option">
               <label>
-                <input type="radio" name="stops" value="any">
+                <input type="radio" name="stops" value="any" <?= ($_GET['stops'] ?? 'any') == 'direct' ? '' : 'checked'?>>
                 Any
               </label>
-              <div class="count">2594<br><span class="from-price">From £493.46</span></div>
+              <div class="count"><?=$response['response']['meta']['count']?><br><span class="from-price">From £<?= $extraMeta['lowestPrice'] ?></span></div>
             </div>
 
             <div class="filter-option">
               <label>
-                <input type="radio" name="direct" value="direct" checked>
+                <input type="radio" name="stops" value="direct" <?= ($_GET['stops'] ?? 'any') == 'direct' ? 'checked' : ''?>>
                 Direct only
               </label>
-              <div class="count">14<br><span class="from-price">From £727.51</span></div>
+              <div class="count"><?=  $extraMeta['directCount'] ?><br><span class="from-price">From £<?= $extraMeta['directLowestPrice'] ?></span></div>
             </div>
 
-            <div class="filter-option">
-              <label>
-                <input type="radio" name="1-stops" value="1stop">
-                1 stop max
-              </label>
-              <div class="count">2072<br><span class="from-price">From £493.46</span></div>
-            </div>
           </div>
 
           <div class="divider"></div>
@@ -81,24 +75,22 @@
           <!-- Airlines -->
           <div class="filter-section">
             <div class="section-title">Airlines</div>
-
-            <div class="filter-option">
-              <label>
-                <input type="checkbox" name="airlines" value="thai-airways" checked>
-                Thai Airways
-              </label>
-              <div class="count">10</div>
-            </div>
-
-            <div class="filter-option">
-              <label>
-                <input type="checkbox" name="airlines" value="eva-airways" checked>
-                Eva Airways
-              </label>
-              <div class="count">10</div>
-            </div>
+            <?php $checkedAirlines = array_merge(($_GET['airlines_show'] ?? []), ($_GET['airlines_hide'] ?? [])) ?>
+              <?php foreach($response['response']['dictionaries']['original_carriers'] as $carriers => $carriersName): ?>
+                <?php if(in_array($carriers, array_keys($response['response']['dictionaries']['carriers']))): ?>
+                  
+                  <div class="filter-option">
+                    <label>
+                      <input type="checkbox" name="airlines_show[]" value="<?= $carriers ?>" <?= checkedAirlines($carriers, $checkedAirlines) ?>>
+                      <?= $carriersName ?>
+                    </label>
+                    <div class="count"><?= $extraMeta['airlinesCount'][$carriers] ?? 0 ?></div>
+                  </div>
+                <?php else: ?>
+                  <input type="hidden" name="airlines_hide[]" value="<?= $carriers ?>">
+                <?php endif; ?>
+              <?php endforeach; ?>
           </div>
-
           <!-- Submit/Reset Buttons -->
           
             
@@ -112,7 +104,7 @@
       <div class="flight-rows">
         <div class="flights">
 
-          <?php foreach ($flights as $flight): ?>
+          <?php foreach ($response['flights'] as $flight): ?>
             <?php
               $outbound = $flight['itineraries'][0]['segments'];
               $inbound = $flight['itineraries'][1]['segments'] ?? [];
@@ -125,7 +117,7 @@
               $outboundSegmentIds = array_column($outbound, 'id');
               $inboundSegmentIds = array_column($inbound, 'id');
               $fareDetails = $flight['travelerPricings'][0]['fareDetailsBySegment'];
-              $dictionaries = $response['dictionaries']; 
+              $dictionaries = $response['response']['dictionaries']; 
 
               $outboundBags = getBagCountBySegments($fareDetails, $outboundSegmentIds);
               $inboundBags = getBagCountBySegments($fareDetails, $inboundSegmentIds);
@@ -237,7 +229,7 @@
             <!-- Side Modal -->
             <div class="side-modal hidden side-modal-js" data-modal="<?=$flight['id']?>">
               <div class="modal-header">
-                <h2>Your flight to Bangkok</h2>
+                <h2>Your flight to <?=$flight['arrivalCountry']?></h2>
                 <button class="close-details close-details-js" data-modal="<?=$flight['id']?>">✖</button>
               </div>
 
@@ -265,23 +257,24 @@
             <input type="hidden" name="return" value="<?= $_GET['return'] ?? '' ?>">
             <input type="hidden" name="adults" value="<?= $_GET['adults'] ?? ''?>">
             <input type="hidden" name="childrens" value="<?= $_GET['childrens'] ?? ''?>">
+            <input type="hidden" name="class" value="<?= $_GET["class"] ?>">
 
-            <?php if ($totalPages > 9): ?>
-              <?php if ($page <= 4): ?>
+            <?php if ($response['totalPages'] > 9): ?>
+              <?php if ($response['page'] <= 4): ?>
                 <!-- Near the start -->
                 <?php for ($i = 1; $i <= 6; $i++): ?>
                   <button name="page" value="<?= $i ?>"><?= $i ?></button>
                 <?php endfor; ?>
                 <button disabled>...</button>
-                <button name="page" value="<?= $totalPages - 1 ?>"><?= $totalPages - 1 ?></button>
-                <button name="page" value="<?= $totalPages ?>"><?= $totalPages ?></button>
+                <button name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
+                <button name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
 
-              <?php elseif ($page >= $totalPages - 3): ?>
+              <?php elseif ($response['page'] >= $response['totalPages'] - 3): ?>
                 <!-- Near the end -->
                 <button name="page" value="1">1</button>
                 <button name="page" value="2">2</button>
                 <button disabled>...</button>
-                <?php for ($i = $totalPages - 5; $i <= $totalPages; $i++): ?>
+                <?php for ($i = $response['totalPages'] - 5; $i <= $response['totalPages']; $i++): ?>
                   <button name="page" value="<?= $i ?>"><?= $i ?></button>
                 <?php endfor; ?>
 
@@ -291,18 +284,18 @@
                 <button name="page" value="2">2</button>
                 <button disabled>...</button>
 
-                <?php for ($i = $page - 2; $i <= $page + 2; $i++): ?>
+                <?php for ($i = $response['page'] - 2; $i <= $response['page'] + 2; $i++): ?>
                   <button name="page" value="<?= $i ?>"><?= $i ?></button>
                 <?php endfor; ?>
 
                 <button disabled>...</button>
-                <button name="page" value="<?= $totalPages - 1 ?>"><?= $totalPages - 1 ?></button>
-                <button name="page" value="<?= $totalPages ?>"><?= $totalPages ?></button>
+                <button name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
+                <button name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
               <?php endif; ?>
 
             <?php else: ?>
               <!-- Fewer than 10 pages, show all -->
-              <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+              <?php for ($i = 1; $i <= $response['totalPages']; $i++): ?>
                 <button name="page" value="<?= $i ?>"><?= $i ?></button>
               <?php endfor; ?>
             <?php endif; ?>

@@ -41,6 +41,28 @@ function old($key, $default = '') {
 function errors($key, $default = '') {
   return Session::get("errors")[$key] ?? $default;
 }
+function preserve_query_params(array $exclude = []) {
+  foreach ($_GET as $key => $value) {
+    if (in_array($key, $exclude, true)) {
+        continue;
+    }
+
+    if (is_array($value)) {
+        foreach ($value as $v) {
+            echo '<input type="hidden" name="' . htmlspecialchars($key) . '[]" value="' . htmlspecialchars($v) . '">' . PHP_EOL;
+        }
+    } else {
+        echo '<input type="hidden" name="' . htmlspecialchars($key) . '" value="' . htmlspecialchars($value) . '">' . PHP_EOL;
+    }
+  }
+}
+function checkedAirlines($selected, $airlines) {
+  if (empty($airlines)) return 'checked';
+  if (in_array($selected, $airlines)) {
+     return 'checked';
+  } 
+  return '';
+}
 
 
 function formatTime($datetime) {
@@ -127,4 +149,5 @@ function map_array(array $array, string $targetKey) {
 
   return $result;
 }
+
 ?>

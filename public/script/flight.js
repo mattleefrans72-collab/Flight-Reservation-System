@@ -46,3 +46,25 @@ overlays.forEach((overlay) => {
     }, 300);
   };
 });
+
+
+// document.addEventListener("DOMContentLoaded", () => {
+//   const form = document.querySelector("form.filters");
+//   const airlineBoxes = form.querySelectorAll("input[name='airlines[]']");
+//   let userChangedAirlines = false;
+
+//   // Track if user interacted with any airline checkbox
+//   airlineBoxes.forEach(cb => {
+//     cb.addEventListener("change", () => {
+//       userChangedAirlines = true;
+//     });
+//   });
+
+//   // Before submit
+//   form.addEventListener("submit", () => {
+//     if (!userChangedAirlines) {
+//       // If user never touched them → uncheck all before submit
+//       airlineBoxes.forEach(cb => cb.checked = false);
+//     }
+//   });
+// });
