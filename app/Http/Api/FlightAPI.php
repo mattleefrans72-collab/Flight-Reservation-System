@@ -34,8 +34,6 @@ class FlightAPI {
 
       $this->response = $response;
 
-      dd('response');
-
       $this->addFlightMetadata();
 
       $this->generateMetadata();
