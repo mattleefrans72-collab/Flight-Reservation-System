@@ -21,9 +21,7 @@ class FlightController {
       $params['travelClass'] = $_GET['class'];
     }
     $stops = $_GET['stops'] ?? '';
-    $airlines1 = $_GET['airlines_show'] ?? [];
-    $airlines2 = $_GET['airlines_hide'] ?? [];
-    $airlines = array_unique(array_merge($airlines1, $airlines2));
+    $airlines = $_GET['airlines_show'] ?? [];
 
     FlightForm::validate($params); 
 
@@ -61,8 +59,12 @@ class FlightController {
 
     $response = $this->paginate($response, $this->resetPageNum);
 
-    // 6. Load view with data
-    view('flight.view.php',  ['response' => $response, 'extraMeta' => $meta]);
+    // 6. Load view with data + only stop cache 
+    unset($encode['airlines']);
+    $stopKey = $cache->encode($encode);
+    $stopCache = $cache->get($stopKey);
+
+    view('flight.view.php',  ['response' => $response, 'extraMeta' => $meta, 'original_cache' => $stopCache]);
   }
   protected function paginate($response, $reset = false, $perPage = 15) {
     $data = $response['data'];

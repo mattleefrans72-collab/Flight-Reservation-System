@@ -75,20 +75,14 @@
           <!-- Airlines -->
           <div class="filter-section">
             <div class="section-title">Airlines</div>
-            <?php $checkedAirlines = array_merge(($_GET['airlines_show'] ?? []), ($_GET['airlines_hide'] ?? [])) ?>
-              <?php foreach($response['response']['dictionaries']['original_carriers'] as $carriers => $carriersName): ?>
-                <?php if(in_array($carriers, array_keys($response['response']['dictionaries']['carriers']))): ?>
-                  
+              <?php foreach($original_cache['response']['dictionaries']['carriers'] as $carriers => $carriersName): ?>     
                   <div class="filter-option">
                     <label>
-                      <input type="checkbox" name="airlines_show[]" value="<?= $carriers ?>" <?= checkedAirlines($carriers, $checkedAirlines) ?>>
+                      <input type="checkbox" name="airlines_show[]" value="<?= $carriers ?>" <?= checkedAirlines($carriers, $_GET['airlines_show'] ?? []) ?>>
                       <?= $carriersName ?>
                     </label>
-                    <div class="count"><?= $extraMeta['airlinesCount'][$carriers] ?? 0 ?></div>
+                    <div class="count"><?= $original_cache['extraMeta']['airlinesCount'][$carriers] ?? 0 ?></div>
                   </div>
-                <?php else: ?>
-                  <input type="hidden" name="airlines_hide[]" value="<?= $carriers ?>">
-                <?php endif; ?>
               <?php endforeach; ?>
           </div>
           <!-- Submit/Reset Buttons -->

@@ -7,7 +7,7 @@ use Amadeus\Exceptions\ResponseException;
 class Test {
     public function index(): void {
 try {
-    $amadeus = Amadeus::builder("REPLACE_BY_YOUR_API_KEY", "REPLACE_BY_YOUR_API_SECRET")
+    $amadeus = Amadeus::builder("UGI1MLRQZdpf2gDdhAemPeWiaxuieTGg", "qD0r3PRW3TZqjOQx")
         ->build();
 
     // Flight Offers Search GET

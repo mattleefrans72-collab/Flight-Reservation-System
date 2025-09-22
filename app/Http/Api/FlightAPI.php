@@ -40,12 +40,9 @@ class FlightAPI {
 
     } catch (ResponseException $e) {
         throw new \Exception('API error: ' . $e->getMessage());
-    } catch (\TypeError $e) {
-    throw new \Exception("Type error: " . $e->getMessage());
-    } catch (\Exception $e) {
-        throw new \Exception("Unexpected error: " . $e->getMessage());
     }
   }
+
   public function addFlightMetadata() {
 
     foreach ($this->response['data'] as &$flight) {
@@ -89,6 +86,7 @@ class FlightAPI {
       if (!empty($flight['direct'])) {
           $directCount++;
       }
+
     }
     
       $airlinesCount = $this->countAirlines($this->response['data']);
@@ -105,9 +103,31 @@ class FlightAPI {
   public function filter($filter = []) {
 
     if (!empty($filter)) {
-        $flights = array_filter($this->response['data'], function ($flight) use ($filter) {
-            if (!empty($filter['stops']) && $filter['stops'] == 'direct') {
-                if (empty($flight['direct'])) return false;
+        $flights = array_filter($this->response['data'], function ($flight) use ($filter): bool {
+
+            // ✅ Filter for direct flights
+            if (!empty($filter['stops']) && $filter['stops'] === 'direct') {
+                if (empty($flight['direct'])) {
+                    return false;
+                }
+            }
+
+            // ✅ Filter for airlines
+            if (!empty($filter['airlines']) && is_array($filter['airlines'])) {
+                $foundAirline = false;
+
+                foreach ($flight['itineraries'] as $itinerary) {
+                    foreach ($itinerary['segments'] as $segment) {
+                        if (in_array($segment['carrierCode'], $filter['airlines'])) {
+                            $foundAirline = true;
+                            break 2; // ✅ Found a matching airline, stop checking
+                        }
+                    }
+                }
+
+                if (!$foundAirline) {
+                    return false; // no matching airline found, skip flight
+                }
             }
 
             return true;
