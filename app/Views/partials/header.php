@@ -6,4 +6,3 @@
     <?php foreach ($attributes as $attribute): ?>
     <link rel="stylesheet" href="/style/<?= $attribute?>.css">
     <?php endforeach; ?>
-  </head>

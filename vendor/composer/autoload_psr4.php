@@ -6,6 +6,7 @@ $vendorDir = dirname(__DIR__);
 $baseDir = dirname($vendorDir);
 
 return array(
+    'Http\\' => array($baseDir . '/app/Http'),
     'Core\\' => array($baseDir . '/app/Core'),
     'App\\' => array($baseDir . '/app'),
     'Amadeus\\Travel\\Predictions\\' => array($vendorDir . '/amadeus4dev/amadeus-php/src/travel/predictions'),

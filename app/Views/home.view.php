@@ -1,5 +1,6 @@
 
 <?php requireStyle (["general", "home.view", "nav"])?>
+</head>
   <body>
 
   <?php require "partials/nav.php" ?>

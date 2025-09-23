@@ -14,12 +14,18 @@
     z-index: 100;
   }
 
-  .profile-button,
-  .home-button,
-  .manage-button,
-  .book-button {
-    height: 50px;
-    border: 0px;
-    padding-left: 20px;
-    padding-right: 20px;
-  }
+.header a,
+.logout-button {
+  background-color: aliceblue;
+  border: 1px solid black;
+  padding: 0.5em 1.25em;
+  text-decoration: none;
+  color: black;
+  border-radius: 4px;
+  display: inline-block;
+  transition: background-color 0.3s ease;
+}
+
+.header a:hover {
+  background-color: #e0f0ff;
+}

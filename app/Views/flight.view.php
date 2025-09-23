@@ -1,4 +1,5 @@
 <?php requireStyle(["general", "flight.view", "nav"]) ?>
+</head>
   <body>
 
   <?php require "partials/nav.php" ?>

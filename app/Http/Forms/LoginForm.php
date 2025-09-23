@@ -1,6 +1,6 @@
 <?php
 
-namespace Http\Form;
+namespace App\Http\Forms;
 
 use App\Core\ValidationExeption;
 use App\Core\Validator;

@@ -1,22 +1,38 @@
-    <div class="header">
-      <div class="left-header">
-        <button class="home-button">
-          Home
-        </button>
-        <button class="book-button">
-          Book Flights
-        </button>
-        <button class="manage-button">
-          Manage Flight
-        </button>
-      </div>
-      <div class="mid-header">
-        
-      </div>
-      <div class="right-header">
-        <button class="profile-button">
-          profile
-        </button>
-      </div>
 
-    </div>
+
+<div class="header">
+  <div class="left-header">
+    <a href="/">
+      Home
+    </a>
+    <a href="/">
+      Book Flights
+    </a>
+    <?php if ($_SESSION['user'] ?? false): ?>
+    <a>
+      Manage Flight
+    </a>
+    <?php endif; ?>
+  </div>
+  <div class="mid-header">
+    
+  </div>
+  <div class="right-header">
+    <?php if ($_SESSION['user'] ?? false): ?>
+      <form action="/session" method="POST">
+        <input type="hidden" name="_method" value="DELETE">
+        <button class="logout-button">
+          Logout
+        </button>
+      </form>
+    <?php else: ?>
+      <a href="/login">
+        Login
+      </a>
+      <a href="/register">
+        Register
+      </a>
+    <?php endif; ?>
+  </div>
+
+</div>
