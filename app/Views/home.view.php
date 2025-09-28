@@ -12,13 +12,13 @@
         <div class="flying-location">
           <div class="flying-from">
             <div>FLYING FROM</div>
-            <input name="from" class="from-input js-from-input" type="text" value="<?= old("from") ?>">
+            <input name="from" class="from-input js-from-input" type="text" value="<?= old("originLocationCode") ?>">
             <div class="js-dropdown-menu dropdown-menu"></div>
             <div class="error"><?= errors("from") ?></div> 
           </div>
           <div class="flying-to">  
             <div>FLYING TO</div>
-            <input name="to" class="to-input js-to-input" type="text" value="<?= old("to") ?>">
+            <input name="to" class="to-input js-to-input" type="text" value="<?= old("destinationLocationCode") ?>">
             <div class="js-dropdown-menu dropdown-menu"></div>
             <div class="error"><?= errors("to") ?></div>
           </div>
@@ -27,11 +27,11 @@
         <div class="flying-dates">
           <div class="departing"> 
             <div>DEPARTING</div>
-            <input name="departure" class="departing-input js-departing-input" type="date" value="<?= old("departure") ?>">
+            <input name="departure" class="departing-input js-departing-input" type="date" value="<?= old("departureDate") ?>">
           </div>
           <div class="returning">
             <div>RETURNING</div>
-            <input name="return" class="returning-input js-returning-input" type="date" value="<?= old("return") ?>">
+            <input name="return" class="returning-input js-returning-input" type="date" value="<?= old("returnDate") ?>">
             <div class="error"><?= errors("dates") ?></div>
           </div>
         </div>

@@ -7,19 +7,28 @@ use App\Http\Api\FlightAPI;
 
 class FlightController {
   protected $resetPageNum = false;
+
   public function index() {
+
     $params = [
-      'originLocationCode' => $_GET["from"],
-      'destinationLocationCode' => $_GET["to"],
-      'departureDate' => $_GET["departure"],
-      'returnDate' => $_GET["return"],
-      'adults' => $_GET["adults"],
-      'children' => is_numeric($_GET["children"]) ? (int)$_GET["children"] : 0,
+      'originLocationCode' => $_GET["from"] ?? '',
+      'destinationLocationCode' => $_GET["to"] ?? '',
+      'departureDate' => $_GET["departure"] ?? '',
+      'returnDate' => $_GET["return"] ?? '',
+      'adults' => $_GET["adults"] ?? '',
+      'children' => is_numeric($_GET["children"] ?? '') ? (int)$_GET["children"] : 0,
       'max' => 100
     ];
+    
     if (isset($_GET['class']) && $_GET['class'] !== 'ANY') {
       $params['travelClass'] = $_GET['class'];
     }
+    if (empty($_GET)) {
+      $params = $_SESSION['params'] ?? '';
+    }
+    
+    $_SESSION['params'] = $params;
+
     $stops = $_GET['stops'] ?? '';
     $airlines = $_GET['airlines_show'] ?? [];
 

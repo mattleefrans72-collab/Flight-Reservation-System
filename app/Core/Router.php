@@ -56,6 +56,10 @@ class Router {
   }
 
   public function previousURI() {
+    //add eception for /flight -> /
+    if (parse_url($_SERVER["REQUEST_URI"])["path"] == '/flight') {
+      return '/';
+    }
     return $_SERVER["HTTP_REFERER"];
   }
 }

@@ -21,6 +21,10 @@ class Database {
   public function fetch() {
     return $this->statement->fetch();
   }
+
+  public function fetchColumn() {
+    return $this->statement->fetchColumn();
+  }
   public function fetchOrFail() {
     $result = $this->fetch();
 

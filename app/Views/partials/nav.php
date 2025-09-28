@@ -5,11 +5,11 @@
     <a href="/">
       Home
     </a>
-    <a href="/">
+    <a href="/flight">
       Book Flights
     </a>
     <?php if ($_SESSION['user'] ?? false): ?>
-    <a>
+    <a href="/flight/manage">
       Manage Flight
     </a>
     <?php endif; ?>

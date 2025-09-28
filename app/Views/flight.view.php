@@ -10,25 +10,25 @@
           <div>Flight filter</div>
           
           <form action="/flight" method="get">
-            <input type="hidden" name="adults" value="<?= $_GET["adults"] ?>">
-            <input type="hidden" name="children" value="<?= $_GET["children"] ?? 0?>">
-            <input type="hidden" name="class" value="<?= $_GET["class"] ?>">
+            <input type="hidden" name="adults" value="<?= $_SESSION['params']['adults'] ?? 0?>">
+            <input type="hidden" name="children" value="<?= $_SESSION['params']['children'] ?? 0?>">
+            <input type="hidden" name="class" value="<?= $_SESSION['params']['travelClass'] ?? 'any' ?>">
 
             <div class="side-bar-info">
               <div class="side-bar-text">FROM:
-                <input name="from" class="filter-input from-input" type="text" value="<?= $_GET["from"] ?>">
+                <input name="from" class="filter-input from-input" type="text" value="<?= $_SESSION['params']["originLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">TO:
-                <input name="to" class="filter-input to-input" type="text" value="<?= $_GET["to"] ?>">
+                <input name="to" class="filter-input to-input" type="text" value="<?= $_SESSION['params']["destinationLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">DEPARTING:
-                <input name="departure" class="filter-input departing-input" type="date" value="<?= $_GET["departure"] ?>">
+                <input name="departure" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["departureDate"] ?>">
               </div>
 
               <div class="side-bar-text">RETURNING:
-                <input name="return" class="filter-input departing-input" type="date" value="<?= $_GET["return"] ?>">
+                <input name="return" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["returnDate"] ?>">
               </div>
 
               <div class="side-bar-search">
@@ -234,9 +234,21 @@
                 <?php if (!empty($inbound)): ?>
                   <?php displayFlightSegmentDetails($inbound, $fareDetails, $dictionaries, 'Inbound Flight'); ?>
                 <?php endif; ?>
+                <div>
+                  <?php if (!empty($_SESSION['user'])): ?>
+                    <form method="post" action="/booking/select">
+                      <input type="hidden" name="flight_data" value="<?= htmlentities(json_encode(['inbound' => $inbound, 'outbound' => $outbound, 'fareDetails' => $fareDetails, 'distionaries' => $dictionaries])) ?>">
+                      <button type="submit">Book Now</button>
+                    </form>
+                  <?php else: ?>
+                    <form method="get" action="/register">
+                      <button type="submit">Register to book</button>
+                    </form>
+                  <?php endif; ?>  
+
+                </div>
               </div>
             </div>
-
           <?php endforeach; ?>
 
           

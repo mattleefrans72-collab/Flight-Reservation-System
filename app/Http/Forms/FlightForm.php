@@ -9,6 +9,10 @@ class FlightForm {
   public function __construct(array $attribute) {
     $this->attribute = $attribute;
 
+    if(empty($attribute)) {
+      $this->errors['general'] = "no attribute";
+    }
+
     if(!Validator::airport($attribute["originLocationCode"])) {
       $this->errors["from"] = "Please input a valid airport code";
     }
