@@ -61,7 +61,7 @@ class BookingController {
     unset($_SESSION['flight_info']);
 
     // Redirect to confirmation page
-    header("Location: /");
+    header("Location: /flight/manage");
     exit;
   }
   private function insertSegment($db, $bookingId, $type, $segments){

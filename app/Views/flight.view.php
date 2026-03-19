@@ -237,6 +237,7 @@
                 <div>
                   <?php if (!empty($_SESSION['user'])): ?>
                     <form method="post" action="/booking/select">
+                      //add amount of people
                       <input type="hidden" name="flight_data" value="<?= htmlentities(json_encode(['inbound' => $inbound, 'outbound' => $outbound, 'fareDetails' => $fareDetails, 'distionaries' => $dictionaries])) ?>">
                       <button type="submit">Book Now</button>
                     </form>
