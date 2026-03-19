@@ -12,14 +12,18 @@
         <div class="flying-location">
           <div class="flying-from">
             <div>FLYING FROM</div>
-            <input name="from" class="from-input js-from-input" type="text" value="<?= old("originLocationCode") ?>">
-            <div class="js-dropdown-menu dropdown-menu"></div>
+            <div class="input-wrapper">
+              <input name="from" class="from-input js-from-input" type="text" value="<?= old("originLocationCode") ?>">
+              <div class="js-dropdown-menu dropdown-menu"></div>
+            </div>
             <div class="error"><?= errors("from") ?></div> 
           </div>
           <div class="flying-to">  
             <div>FLYING TO</div>
-            <input name="to" class="to-input js-to-input" type="text" value="<?= old("destinationLocationCode") ?>">
-            <div class="js-dropdown-menu dropdown-menu"></div>
+            <div class="input-wrapper">
+              <input name="to" class="to-input js-to-input" type="text" value="<?= old("destinationLocationCode") ?>">
+              <div class="js-dropdown-menu dropdown-menu"></div>
+            </div>
             <div class="error"><?= errors("to") ?></div>
           </div>
         </div>

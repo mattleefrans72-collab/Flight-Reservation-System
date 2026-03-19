@@ -29,14 +29,14 @@ class FlightAPI {
       // 4. Make API call
       $flightOffers = $amadeus->getShopping()->getFlightOffers()->get($params);
 
+      if (!empty($flightOffers)) {
         // 5. Decode the JSON response
-      $response = json_decode($flightOffers[0]->getResponse()->getBody(), true) ?? [];
+         $response = json_decode($flightOffers[0]->getResponse()->getBody(), true);
+         $this->response = $response;
 
-      $this->response = $response;
-
-      $this->addFlightMetadata();
-
-      $this->generateMetadata();
+         $this->addFlightMetadata();
+         $this->generateMetadata();
+      }
 
     } catch (ResponseException $e) {
         throw new \Exception('API error: ' . $e->getMessage());
@@ -101,18 +101,20 @@ class FlightAPI {
     ];
 }
   public function filter($filter = []) {
-
+    if (empty($this->response)) {
+      return;
+    }
     if (!empty($filter)) {
         $flights = array_filter($this->response['data'], function ($flight) use ($filter): bool {
 
-            // ✅ Filter for direct flights
+            // Filter for direct flights
             if (!empty($filter['stops']) && $filter['stops'] === 'direct') {
                 if (empty($flight['direct'])) {
                     return false;
                 }
             }
 
-            // ✅ Filter for airlines
+            // Filter for airlines
             if (!empty($filter['airlines']) && is_array($filter['airlines'])) {
                 $foundAirline = false;
 

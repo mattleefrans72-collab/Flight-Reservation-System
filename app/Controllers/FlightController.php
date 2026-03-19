@@ -76,7 +76,7 @@ class FlightController {
     view('flight.view.php',  ['response' => $response, 'extraMeta' => $meta, 'original_cache' => $stopCache]);
   }
   protected function paginate($response, $reset = false, $perPage = 15) {
-    $data = $response['data'];
+    $data = $response['data'] ?? [];
     $page = !$reset ? (int)($_GET['page'] ?? 1) : 1;
     $total = count($data);
     $totalPages = ceil($total / $perPage);
