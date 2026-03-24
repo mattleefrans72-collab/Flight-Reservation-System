@@ -13,7 +13,7 @@
           <div class="flying-from">
             <div>FLYING FROM</div>
             <div class="input-wrapper">
-              <input name="from" class="from-input js-from-input" type="text" value="<?= old("originLocationCode") ?>">
+              <input name="originLocationCode" class="from-input js-from-input" type="text" value="<?= old("originLocationCode") ?>">
               <div class="js-dropdown-menu dropdown-menu"></div>
             </div>
             <div class="error"><?= errors("from") ?></div> 
@@ -21,7 +21,7 @@
           <div class="flying-to">  
             <div>FLYING TO</div>
             <div class="input-wrapper">
-              <input name="to" class="to-input js-to-input" type="text" value="<?= old("destinationLocationCode") ?>">
+              <input name="destinationLocationCode" class="to-input js-to-input" type="text" value="<?= old("destinationLocationCode") ?>">
               <div class="js-dropdown-menu dropdown-menu"></div>
             </div>
             <div class="error"><?= errors("to") ?></div>
@@ -31,11 +31,11 @@
         <div class="flying-dates">
           <div class="departing"> 
             <div>DEPARTING</div>
-            <input name="departure" class="departing-input js-departing-input" type="date" value="<?= old("departureDate") ?>">
+            <input name="departureDate" class="departing-input js-departing-input" type="date" value="<?= old("departureDate") ?>">
           </div>
           <div class="returning">
             <div>RETURNING</div>
-            <input name="return" class="returning-input js-returning-input" type="date" value="<?= old("returnDate") ?>">
+            <input name="returnDate" class="returning-input js-returning-input" type="date" value="<?= old("returnDate") ?>">
             <div class="error"><?= errors("dates") ?></div>
           </div>
         </div>
@@ -55,7 +55,7 @@
         
         <div class="class-booking">
           <div>TRAVEL CLASS</div>
-          <select name="class" class="flying-class js-class-input">
+          <select name="travelClass" class="flying-class js-class-input">
             <option value="ANY">Any</option>
             <option value="ECONOMY">Economy</option>
             <option value="PRIMIUM ECONOMY">Premium Economy</option>

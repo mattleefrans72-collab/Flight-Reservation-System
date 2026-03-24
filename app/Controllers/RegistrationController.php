@@ -37,12 +37,12 @@ class RegistrationController {
     } else {
       $db->query("INSERT INTO users(email, password) VALUE(:email, :password)", ["email" => $email, "password" => password_hash($password, PASSWORD_DEFAULT)]);
       
-      Authenticator::login(["email" => $email]);
+      Authenticator::login($user);
 
       header("location: /");
       exit();
     }
   }
 }
-
+  
 ?>

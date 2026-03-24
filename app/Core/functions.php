@@ -64,6 +64,12 @@ function checkedAirlines($selected, $airlines) {
   return '';
 }
 
+function prettyPrint($data) {
+  echo '<pre>';
+  echo json_encode($data, JSON_PRETTY_PRINT);
+  echo '</pre>';
+  die();
+}
 
 function formatTime($datetime) {
     return date('H:i', strtotime($datetime));

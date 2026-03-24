@@ -3,7 +3,7 @@
 namespace App\Services;
 
 use App\Core\App;
-use App\Http\Api\FlightAPI;
+use App\Core\Session\FlightSession;
 use App\Core\Database;
 
 class BookingService {
@@ -11,21 +11,11 @@ class BookingService {
   public function __construct() {
     $this->db = App::resolve("Core\Database");
   }
-  public function createBookingFromSessionFlight(string $userEmail) {
-    $flight = Flight::getInfo();
+  public function createBookingFromSessionFlight($userId) {
+    $flight = FlightSession::getInfo();
 
     if (empty($flight)) {
       throw new \Exception("No selected flight in session.");
-    }
-
-    $userId = $this->db
-      ->query("SELECT id FROM users WHERE email = :email", [
-        "email" => $userEmail,
-      ])
-      ->fetchColumn();
-
-    if (!$userId) {
-      throw new \Exception("User not found.");
     }
 
     $bookingReference = strtoupper(bin2hex(random_bytes(4)));
@@ -46,7 +36,7 @@ class BookingService {
       $this->insertSegments($bookingId, "inbound", $flight["inbound"]);
     }
 
-    Flight::clear();
+    FlightSession::clear();
 
     return $bookingReference;
   }
@@ -69,6 +59,57 @@ class BookingService {
           "cabin_bag" => $segment["cabin_bag"] ?? 0,
         ],
       );
+    }
+  }
+  public function createBooking($userId) {
+    $flight = FlightSession::getInfo();
+
+    if (empty($flight)) {
+      throw new \Exception("No selected flight in session.");
+    }
+
+    $bookingReference = strtoupper(bin2hex(random_bytes(4)));
+
+    $this->db->query(
+      "INSERT INTO bookings (user_id, booking_reference)
+             VALUES (:user_id, :booking_reference)",
+      [
+        "user_id" => $userId,
+        "booking_reference" => $bookingReference,
+      ],
+    );
+
+    $bookingId = $this->db->conn->lastInsertId();
+
+    $this->insertSegments($bookingId, "outbound", $flight["outbound"] ?? []);
+
+    if (!empty($flight["inbound"])) {
+      $this->insertSegments($bookingId, "inbound", $flight["inbound"]);
+    }
+
+    FlightSession::clear();
+
+    return $bookingReference;
+  }
+
+  public function store() {
+    $service = new BookingService();
+
+    try {
+      $bookingReference = $service->createBooking($_SESSION["user"]["id"]);
+
+      // (optional) store success message
+      $_SESSION["success"] = "Booking created: " . $bookingReference;
+
+      // 4. Redirect after success
+      header("Location: /flight/manage");
+      exit();
+    } catch (\Exception $e) {
+      // 5. Handle failure
+      $_SESSION["error"] = $e->getMessage();
+
+      header("Location: /booking");
+      exit();
     }
   }
 }

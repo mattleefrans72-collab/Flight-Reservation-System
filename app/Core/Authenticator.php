@@ -11,7 +11,7 @@ class Authenticator {
 
     if ($user) {
       if (password_verify($password, $user["password"])) {
-        Authenticator::login(["email" => $email]);
+        Authenticator::login($user);
         return true;
       }  
     }
@@ -19,8 +19,9 @@ class Authenticator {
   }
   public static function login($user) {
     $_SESSION["user"] = [
+    "id" => $user["id"],
     "email" => $user["email"]
-    ];
+    ];  
     session_regenerate_id(true);
 }
   public static function logout() {

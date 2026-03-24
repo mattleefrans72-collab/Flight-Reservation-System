@@ -2,13 +2,13 @@
 
 namespace App\Core;
 
-use App\Http\Api\FlightAPI;
+use App\Repositories\AirportRepository;
 
 class Cache {
   protected string $path = __DIR__ . '/../../cache/';
   protected int $defaultExpiry = 3600; // 5 minutes
 
-  public function encode(array $value): string {
+  public function encode($value) {
     $original = $value;
     unset($value['airlines']);
     unset($value['stops']);
@@ -36,7 +36,7 @@ class Cache {
       sort($selected);
 
       if ($selected === $allAirlineKeys) {
-        unset($original['airlines']); // all airlines selected → same as no filter
+        unset($original['airlines']); // all airlines selected
       }
     }
     return 'flights_' . md5(json_encode($original));
@@ -45,7 +45,7 @@ class Cache {
   public function createOriginalCache ($params, $stop_filter = [], $response) {
 
     if ($response == null) {
-      $db = new FlightAPI($params);
+      $db = new AirportRepository($params);
       $db->filter($stop_filter);
 
       $response = $db->response;

@@ -3,7 +3,7 @@ namespace App\Controllers;
 
 use App\Core\Authenticator;
 use App\Core\Session;
-use App\Http\Forms\LoginForm;
+use App\Forms\LoginForm;
 
 class SessionController {
   public function create () {
