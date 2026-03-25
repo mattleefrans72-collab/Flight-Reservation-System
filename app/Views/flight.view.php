@@ -10,25 +10,25 @@
           <div>Flight filter</div>
           
           <form action="/flight" method="get">
-            <input type="hidden" name="adults" value="<?= $_SESSION['params']['adults'] ?? 0?>">
-            <input type="hidden" name="children" value="<?= $_SESSION['params']['children'] ?? 0?>">
-            <input type="hidden" name="class" value="<?= $_SESSION['params']['travelClass'] ?? 'any' ?>">
+            <input type="hidden" name="adults" value="<?= $_GET['adults'] ?? 0?>">
+            <input type="hidden" name="children" value="<?= $_GET['children'] ?? 0?>">
+            <input type="hidden" name="class" value="<?= $_GET['travelClass'] ?? 'any' ?>">
 
             <div class="side-bar-info">
               <div class="side-bar-text">FROM:
-                <input name="originLocationCode" class="filter-input from-input" type="text" value="<?= $_SESSION['params']["originLocationCode"] ?>">
+                <input name="originLocationCode" class="filter-input from-input" type="text" value="<?= $_GET["originLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">TO:
-                <input name="destinationLocationCode" class="filter-input to-input" type="text" value="<?= $_SESSION['params']["destinationLocationCode"] ?>">
+                <input name="destinationLocationCode" class="filter-input to-input" type="text" value="<?= $_GET["destinationLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">DEPARTING:
-                <input name="departureDate" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["departureDate"] ?>">
+                <input name="departureDate" class="filter-input departing-input" type="date" value="<?= $_GET["departureDate"] ?>">
               </div>
 
               <div class="side-bar-text">RETURNING:
-                <input name="returnDate" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["returnDate"] ?>">
+                <input name="returnDate" class="filter-input departing-input" type="date" value="<?= $_GET["returnDate"] ?>">
               </div>
 
               <div class="side-bar-search">
@@ -79,13 +79,13 @@
             <!-- Airlines -->
             <div class="filter-section">
               <div class="section-title">Airlines</div>
-                <?php foreach($original_cache['response']['dictionaries']['carriers'] as $carriers => $carriersName): ?>     
+                <?php foreach($stop_filtered_cashe['response']['dictionaries']['carriers'] as $carriers => $carriersName): ?>     
                     <div class="filter-option">
                       <label>
                         <input type="checkbox" name="airlines_show[]" value="<?= $carriers ?>" <?= checkedAirlines($carriers, $_GET['airlines_show'] ?? []) ?>>
                         <?= $carriersName ?>
                       </label>
-                      <div class="count"><?= $original_cache['extraMeta']['airlinesCount'][$carriers] ?? 0 ?></div>
+                      <div class="count"><?= $stop_filtered_cashe['extraMeta']['airlinesCount'][$carriers] ?? 0 ?></div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -270,7 +270,7 @@
               <input type="hidden" name="children" value="<?= $_GET['children'] ?? ''?>">
               <input type="hidden" name="travelClass" value="<?= $_GET["travelClass"] ?? 'ANY'?>">              
               <input type="hidden" name="stops" value="<?= $_GET["stops"] ?? '' ?>">
-             
+              <input type="hidden" name="page" value="1">                    
 
               <?php foreach (($_GET['airlines_show'] ?? []) as $airline): ?>
                 <input type="hidden" name="airlines_show[]" value="<?= htmlspecialchars($airline) ?>">

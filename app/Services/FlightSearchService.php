@@ -9,60 +9,74 @@ class FlightSearchService {
   protected bool $resetPageNum = false;
 
   public function search($queryParams) {
-    if (empty($queryParams)) {
-      $queryParams = $_SESSION["params"] ?? []; 
-    }
-    
     $params = $this->mainParams($queryParams);
     $filter = $this->filtersParams($queryParams);
     $page = (int) ($queryParams["page"] ?? 1);
 
-    $_SESSION["params"] = $params;
-
     FlightForm::validate($params);
 
+    $keyAndStops = [
+      ...$params,
+      "stops" => $filter["stops"]
+    ];
+    
     $cache = new Cache();
 
-    $encode = $params;
-    $encode["stops"] = $filter["stops"];
-    $encode["airlines"] = $filter["airlines"];
+    $stopsFilteredKey = $cache->encodeOnlyStopKey($keyAndStops);
 
-    
-    $key = $cache->encode($encode);
+    $stopsFilteredCached = $cache->get($stopsFilteredKey);
 
-    $cached = $cache->get($key);
+    if (!$stopsFilteredCached) {
+      $repo = new AirportRepository($params);
+      $repo->filter($keyAndStops);
+
+      $stopsFilteredCached = [
+        "response" => $repo->response,
+        "extraMeta" => $repo->meta,
+      ];
+
+      $cache->set($stopsFilteredKey, $stopsFilteredCached);
+    }
+
+    $filterKey = $cache->encodeKey([
+      ...$params,
+      "stops" => $filter["stops"],
+      "airlines" => $filter["airlines"],
+    ]);
+
+    $cached = $cache->get($filterKey);
+
+    if (!$cached) {
+      $repo = new AirportRepository($params);
+      $repo->filter($filter);
+
+      $cached = [
+        "response" => $repo->response,
+        "extraMeta" => $repo->meta,
+      ];
+
+      $cache->set($filterKey, $cached);
+    }
+
     $response = $cached["response"] ?? [];
     $meta = $cached["extraMeta"] ?? [];
 
-    if (!$cached) {
-      $this->resetPageNum = true;
-
-      $flightsRepo = new AirportRepository($params);
-      $flightsRepo->filter($filter);
-
-      $response = $flightsRepo->response;
-      $meta = $flightsRepo->meta;
-
-      $cache->set($key, [
-        "response" => $response,
-        "extraMeta" => $meta,
-      ]);
-    }
-
     $response = $this->paginate($response, $this->resetPageNum, $page);
-
-    unset($encode["airlines"]);
-    $stopKey = $cache->encode($encode);
-    $stopCache = $cache->get($stopKey);
 
     return [
       "response" => $response,
       "extraMeta" => $meta,
-      "original_cache" => $stopCache,
+      "original_cache" => $cached,
+      "stop_filtered_cashe" => $stopsFilteredCached
     ];
   }
 
-  protected function paginate($response, $reset = false, $requestedPage = 1, $perPage = 15) {
+  protected function paginate(
+    $response,
+    $reset = false,
+    $requestedPage = 1,
+    $perPage = 15,
+  ) {
     $data = $response["data"] ?? [];
     $page = $reset ? 1 : max(1, $requestedPage);
 
@@ -82,17 +96,21 @@ class FlightSearchService {
   private function mainParams($queryParams) {
     $params = [
       "originLocationCode" => $queryParams["originLocationCode"] ?? "",
-      "destinationLocationCode" => $queryParams["destinationLocationCode"] ?? "",
+      "destinationLocationCode" =>
+        $queryParams["destinationLocationCode"] ?? "",
       "departureDate" => $queryParams["departureDate"] ?? "",
       "returnDate" => $queryParams["returnDate"] ?? "",
       "adults" => $queryParams["adults"] ?? "",
       "children" => is_numeric($queryParams["children"] ?? null)
         ? (int) $queryParams["children"]
         : 0,
-      "max" => 100,
+      "max" => 200,
     ];
 
-    if (isset($queryParams["travelClass"]) && $queryParams["travelClass"] !== "ANY") {
+    if (
+      isset($queryParams["travelClass"]) &&
+      $queryParams["travelClass"] !== "ANY"
+    ) {
       $params["travelClass"] = $queryParams["travelClass"];
     }
 
@@ -100,6 +118,9 @@ class FlightSearchService {
   }
 
   private function filtersParams($queryParams) {
+    if (!isset($queryParams["stops"]) || $queryParams["stops"] == "ANY") {
+      unset($queryParams["stops"]);
+    } 
     return [
       "stops" => $queryParams["stops"] ?? "",
       "airlines" => $queryParams["airlines_show"] ?? [],

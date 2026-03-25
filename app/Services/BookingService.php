@@ -11,37 +11,12 @@ class BookingService {
   public function __construct() {
     $this->db = App::resolve("Core\Database");
   }
-  public function createBookingFromSessionFlight($userId) {
-    $flight = FlightSession::getInfo();
-
-    if (empty($flight)) {
-      throw new \Exception("No selected flight in session.");
-    }
-
-    $bookingReference = strtoupper(bin2hex(random_bytes(4)));
-
-    $this->db->query(
-      "INSERT INTO bookings (user_id, booking_reference) VALUES (:user_id, :booking_reference)",
-      [
-        "user_id" => $userId,
-        "booking_reference" => $bookingReference,
-      ],
-    );
-
-    $bookingId = $this->db->conn->lastInsertId();
-
-    $this->insertSegments($bookingId, "outbound", $flight["outbound"] ?? []);
-
-    if (!empty($flight["inbound"])) {
-      $this->insertSegments($bookingId, "inbound", $flight["inbound"]);
-    }
-
-    FlightSession::clear();
-
-    return $bookingReference;
-  }
-  protected function insertSegments($bookingId, $segmentType, $segments) {
+  protected function insertSegments($bookingId, $segmentType, $segments, $fareDetails) {
     foreach ($segments as $segment) {
+      $segmentId = $segment['id'];
+      $fare = getFareBySegmentId($fareDetails, $segmentId);
+      $departure = $segment["departure"];
+      $arrival = $segment["arrival"];
       $this->db->query(
         "INSERT INTO booking_segments (booking_id, segment_type, departure_code, arrival_code, departure_time, arrival_time, airline, aircraft, cabin, checked_bag, cabin_bag)
         VALUES (:booking_id, :segment_type, :departure_code, :arrival_code, :departure_time, :arrival_time, :airline, :aircraft, :cabin, :checked_bag, :cabin_bag)",
@@ -55,8 +30,8 @@ class BookingService {
           "airline" => $segment["carrierCode"] ?? "N/A",
           "aircraft" => $segment["aircraft"]["code"] ?? "N/A",
           "cabin" => $segment["cabin"] ?? "ECONOMY",
-          "checked_bag" => $segment["checked_bag"] ?? 0,
-          "cabin_bag" => $segment["cabin_bag"] ?? 0,
+          "checked_bag" => $fare['includedCheckedBags']['quantity'] ?? '0',
+          "cabin_bag" => $fare['includedCabinBags']['quantity'] ?? '0'
         ],
       );
     }
@@ -81,10 +56,10 @@ class BookingService {
 
     $bookingId = $this->db->conn->lastInsertId();
 
-    $this->insertSegments($bookingId, "outbound", $flight["outbound"] ?? []);
+    $this->insertSegments($bookingId, "outbound", $flight["outbound"] ?? [], $flight["fareDetails"]);
 
     if (!empty($flight["inbound"])) {
-      $this->insertSegments($bookingId, "inbound", $flight["inbound"]);
+      $this->insertSegments($bookingId, "inbound", $flight["inbound"], $flight["fareDetails"]);
     }
 
     FlightSession::clear();

@@ -47,6 +47,26 @@ overlays.forEach((overlay) => {
   };
 });
 
+document.querySelector('.filters')?.addEventListener('submit', function (e) {
+  const form = e.currentTarget;
+  const stopInputs = form.querySelectorAll('input[name="stops"]:checked');
+  const airlineInputs = form.querySelectorAll('input[name="airlines_show[]"]');
+  const checkedAirlines = form.querySelectorAll('input[name="airlines_show[]"]:checked');
+
+  stopInputs.forEach(input => {
+    if (input.value === 'any') {
+      input.disabled = true;
+    }
+  });
+
+  // If all airlines are checked, disable them so they don't go into URL
+  if (airlineInputs.length > 0 && checkedAirlines.length === airlineInputs.length) {
+    checkedAirlines.forEach(input => {
+      input.disabled = true;
+    });
+  }
+});
+
 
 // document.addEventListener("DOMContentLoaded", () => {
 //   const form = document.querySelector("form.filters");
