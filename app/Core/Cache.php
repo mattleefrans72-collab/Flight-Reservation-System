@@ -6,7 +6,7 @@ use App\Repositories\AirportRepository;
 
 class Cache {
   protected string $path = __DIR__ . '/../../cache/';
-  protected int $defaultExpiry = 3600; // 5 minutes
+  protected int $defaultExpiry = 360000; // 5 minutes
 
   public function encode($value) {
     $original = $value;

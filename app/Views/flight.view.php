@@ -16,19 +16,19 @@
 
             <div class="side-bar-info">
               <div class="side-bar-text">FROM:
-                <input name="from" class="filter-input from-input" type="text" value="<?= $_SESSION['params']["originLocationCode"] ?>">
+                <input name="originLocationCode" class="filter-input from-input" type="text" value="<?= $_SESSION['params']["originLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">TO:
-                <input name="to" class="filter-input to-input" type="text" value="<?= $_SESSION['params']["destinationLocationCode"] ?>">
+                <input name="destinationLocationCode" class="filter-input to-input" type="text" value="<?= $_SESSION['params']["destinationLocationCode"] ?>">
               </div>
 
               <div class="side-bar-text">DEPARTING:
-                <input name="departure" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["departureDate"] ?>">
+                <input name="departureDate" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["departureDate"] ?>">
               </div>
 
               <div class="side-bar-text">RETURNING:
-                <input name="return" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["returnDate"] ?>">
+                <input name="returnDate" class="filter-input departing-input" type="date" value="<?= $_SESSION['params']["returnDate"] ?>">
               </div>
 
               <div class="side-bar-search">
@@ -139,7 +139,7 @@
                       <div class="<?=$logoSize?>">
                       <?php foreach ($outboundAirlines as $index => $airline): ?>
                         <div class="image logo-<?=$index?>">
-                          <img src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
+                          <img class="airline-logo" src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
 
                         </div>
                       <?php endforeach; ?>
@@ -175,7 +175,7 @@
                         <div class="<?=$logoSize?>">
                         <?php foreach ($inboundAirlines as $index => $airline): ?>
                           <div class="image logo-<?=$index?>">
-                            <img src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
+                            <img class="airline-logo" src="https://img.wway.io/pics/root/<?=$airline?>@png?exar=1&rs=fit:200:200" alt="">
                           </div>
                         <?php endforeach; ?>
                         </div>
@@ -262,52 +262,58 @@
             <form action="/flight" method="get">
 
               <!-- Preserve search input -->
-              <input type="hidden" name="from" value="<?= $_GET['from'] ?? '' ?>">
-              <input type="hidden" name="to" value="<?= $_GET['to'] ?? '' ?>">
-              <input type="hidden" name="departure" value="<?= $_GET['departure'] ?? '' ?>">
-              <input type="hidden" name="return" value="<?= $_GET['return'] ?? '' ?>">
+              <input type="hidden" name="originLocationCode" value="<?= $_GET['originLocationCode'] ?? '' ?>">
+              <input type="hidden" name="destinationLocationCode" value="<?= $_GET['destinationLocationCode'] ?? '' ?>">
+              <input type="hidden" name="departureDate" value="<?= $_GET['departureDate'] ?? '' ?>">
+              <input type="hidden" name="returnDate" value="<?= $_GET['returnDate'] ?? '' ?>">
               <input type="hidden" name="adults" value="<?= $_GET['adults'] ?? ''?>">
-              <input type="hidden" name="childrens" value="<?= $_GET['childrens'] ?? ''?>">
-              <input type="hidden" name="class" value="<?= $_GET["class"] ?>">
+              <input type="hidden" name="children" value="<?= $_GET['children'] ?? ''?>">
+              <input type="hidden" name="travelClass" value="<?= $_GET["travelClass"] ?? 'ANY'?>">              
+              <input type="hidden" name="stops" value="<?= $_GET["stops"] ?? '' ?>">
+             
+
+              <?php foreach (($_GET['airlines_show'] ?? []) as $airline): ?>
+                <input type="hidden" name="airlines_show[]" value="<?= htmlspecialchars($airline) ?>">
+              <?php endforeach; ?>
 
               <?php if ($response['totalPages'] > 9): ?>
                 <?php if ($response['page'] <= 4): ?>
                   <!-- Near the start -->
                   <?php for ($i = 1; $i <= 6; $i++): ?>
-                    <button name="page" value="<?= $i ?>"><?= $i ?></button>
+                    <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $i ?>"><?= $i ?></button>
                   <?php endfor; ?>
                   <button disabled>...</button>
-                  <button name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
-                  <button name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
 
                 <?php elseif ($response['page'] >= $response['totalPages'] - 3): ?>
                   <!-- Near the end -->
-                  <button name="page" value="1">1</button>
-                  <button name="page" value="2">2</button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="1">1</button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="2">2</button>
                   <button disabled>...</button>
                   <?php for ($i = $response['totalPages'] - 5; $i <= $response['totalPages']; $i++): ?>
-                    <button name="page" value="<?= $i ?>"><?= $i ?></button>
+                    <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $i ?>"><?= $i ?></button>
                   <?php endfor; ?>
 
                 <?php else: ?>
                   <!-- Middle range -->
-                  <button name="page" value="1">1</button>
-                  <button name="page" value="2">2</button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="1">1</button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="2">2</button>
                   <button disabled>...</button>
 
                   <?php for ($i = $response['page'] - 2; $i <= $response['page'] + 2; $i++): ?>
-                    <button name="page" value="<?= $i ?>"><?= $i ?></button>
+                    <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $i ?>"><?= $i ?></button>
                   <?php endfor; ?>
 
                   <button disabled>...</button>
-                  <button name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
-                  <button name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $response['totalPages'] - 1 ?>"><?= $response['totalPages'] - 1 ?></button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $response['totalPages'] ?>"><?= $response['totalPages'] ?></button>
                 <?php endif; ?>
 
               <?php else: ?>
                 <!-- Fewer than 10 pages, show all -->
                 <?php for ($i = 1; $i <= $response['totalPages']; $i++): ?>
-                  <button name="page" value="<?= $i ?>"><?= $i ?></button>
+                  <button class="<?= ($response['currentPage'] == $i) ? 'checked' : '' ?>" name="page" value="<?= $i ?>"><?= $i ?></button>
                 <?php endfor; ?>
               <?php endif; ?>
             </form>

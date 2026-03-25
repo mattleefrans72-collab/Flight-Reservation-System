@@ -10,10 +10,9 @@ class FlightSearchService {
 
   public function search($queryParams) {
     if (empty($queryParams)) {
-      $queryParams = $_SESSION["params"] ?? [];
-      
+      $queryParams = $_SESSION["params"] ?? []; 
     }
-
+    
     $params = $this->mainParams($queryParams);
     $filter = $this->filtersParams($queryParams);
     $page = (int) ($queryParams["page"] ?? 1);
@@ -28,6 +27,7 @@ class FlightSearchService {
     $encode["stops"] = $filter["stops"];
     $encode["airlines"] = $filter["airlines"];
 
+    
     $key = $cache->encode($encode);
 
     $cached = $cache->get($key);

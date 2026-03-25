@@ -273,47 +273,58 @@ form.filters button[type="submit"]:hover {
   width: 64px;
   height: 44px;
   padding: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-
-.logo img,
-.small-logo img,
-.large-logo img,
-.travel-class img,
-.flight-length img {
-  height: 100%;
-  object-fit: contain;
+  overflow: hidden;
 }
 
 .large-logo,
 .small-logo {
-  height: 100%;
+  width: 64px;
+  height: 44px;
 }
 
 .small-logo {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
-  width: 52px;
-  height: 44px;
 }
 
 .image {
+  width: 100%;
   height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.logo img,
+.large-logo img,
+.small-logo img,
+.travel-class img,
+.flight-length img {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain;
+  display: block;
 }
 
 .logo-0 {
   position: relative;
-  top: 4px;
+  top: 5px;
 }
 
 .logo-1 {
   grid-column: 2;
   grid-row: 2;
   position: relative;
-  bottom: 4px;
+  bottom: 5px;
+  right: 10px;
+}
+
+.small-logo .logo-0,
+.small-logo .logo-1 {
+  width: 150%;
+  height: 150%;
 }
 
 /* TIMES */
@@ -479,6 +490,10 @@ form.filters button[type="submit"]:hover {
   font-weight: 700;
   cursor: pointer;
   transition: 0.2s ease;
+}
+
+.flight-pages button.checked {
+  background: #eff6ff;
 }
 
 .flight-pages button:hover:not(:disabled) {
