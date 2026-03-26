@@ -327,6 +327,94 @@ form.filters button[type="submit"]:hover {
   height: 150%;
 }
 
+/* dropdown anchor */
+.flying-from,
+.flying-to {
+    position: relative;
+}
+
+/* dropdown menu */
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  max-height: 220px;
+  overflow-y: auto;
+  background-color: rgba(255, 255, 255, 0.97);
+  border-radius: 14px;
+  padding: 8px;
+  display: none;
+  grid-auto-rows: auto;
+  gap: 8px;
+  z-index: 200;
+  box-shadow: 0 18px 35px rgba(0, 0, 0, 0.18);
+  width: 300px;
+}
+
+.dropdown-menu.open {
+    display: grid;
+}
+
+.dropdown-menu::-webkit-scrollbar {
+  width: 10px;
+}
+
+.dropdown-menu::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb {
+  background-color: gray;
+  border-radius: 10px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+.dropdown-menu::-webkit-scrollbar-thumb:hover {
+  background-color: rgb(170, 170, 170);
+}
+
+/* dropdown items */
+.items {
+  display: grid;
+  grid-template-rows: auto auto;
+  gap: 3px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  transition: 0.2s ease;
+}
+
+.items:hover {
+  background-color: rgb(235, 243, 255);
+  cursor: pointer;
+}
+
+.iata-and-name,
+.location {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.iata {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+}
+
+.name {
+  font-size: 15px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.location {
+  font-size: 14px;
+  color: rgb(85, 85, 85);
+}
+
+
 /* TIMES */
 .depart-time,
 .arrive-time {

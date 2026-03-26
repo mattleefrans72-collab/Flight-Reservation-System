@@ -15,12 +15,14 @@
             <input type="hidden" name="class" value="<?= $_GET['travelClass'] ?? 'any' ?>">
 
             <div class="side-bar-info">
-              <div class="side-bar-text">FROM:
-                <input name="originLocationCode" class="filter-input from-input" type="text" value="<?= $_GET["originLocationCode"] ?>">
+              <div class="side-bar-text flying-from">FROM:
+                <input name="originLocationCode" class="filter-input from-input js-from-input" type="text" value="<?= $_GET["originLocationCode"] ?>">
+                <div class="js-dropdown-menu dropdown-menu"></div>
               </div>
 
-              <div class="side-bar-text">TO:
-                <input name="destinationLocationCode" class="filter-input to-input" type="text" value="<?= $_GET["destinationLocationCode"] ?>">
+              <div class="side-bar-text flying-to">TO:
+                <input name="destinationLocationCode" class="filter-input to-input js-to-input" type="text" value="<?= $_GET["destinationLocationCode"] ?>">
+                <div class="js-dropdown-menu dropdown-menu"></div>
               </div>
 
               <div class="side-bar-text">DEPARTING:
@@ -329,6 +331,6 @@
       </div>
     <?php endif; ?>
 
-   <?php requireModule(["utils/heading", "flight"]) ?>
+   <?php requireModule(["utils/heading", "flight", "home"]) ?>
   </body>
 </html>

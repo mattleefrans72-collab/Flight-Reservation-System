@@ -12,8 +12,10 @@ class AirportRepository {
   protected static $privateKey;
   public $response = [];
   public $meta = [];
+  protected CountryRepository $countryRepo;
 
   public function __construct($params) {
+    $this->countryRepo = new CountryRepository();
     try {
       if (!self::$apiKey) {
         self::$apiKey = Config::get("amadeus.api_key");
@@ -54,7 +56,7 @@ class AirportRepository {
       $iataCode = $lastSegment["arrival"]["iataCode"] ?? "";
 
       // Look up the country
-      $country = CountryRepository::getCountryByIata($iataCode);
+      $country = $this->countryRepo->getCountryByIata($iataCode);
       $flight["arrivalCountry"] = $country ?? "Unknown";
       if (
         stopLabel($outboundSegments) == 0 &&
